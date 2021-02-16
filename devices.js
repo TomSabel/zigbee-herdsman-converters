@@ -1180,13 +1180,6 @@ const devices = [
 
     // TuYa
     {
-        fingerprint: [{modelID: 'TS011F', manufacturerName: '_TZ3000_rk2yzt0u'}, {manufacturerName: '_TZ3000_o4cjetlm'}],
-        model: 'ZN231392',
-        vendor: 'TuYa',
-        description: 'Smart water/gas valve',
-        extend: preset.switch(),
-    },
-    {
         fingerprint: [{modelID: 'TS0505B', manufacturerName: '_TZ3000_qqjaziws'}],
         model: 'TS0505B',
         vendor: 'TuYa',
@@ -1201,14 +1194,6 @@ const devices = [
         description: 'Zigbee smart mini led strip controller 5V/12V/24V RGB',
         extend: preset.light_onoff_brightness_colorxy(),
         // Requires red fix: https://github.com/Koenkk/zigbee2mqtt/issues/5962#issue-796462106
-        meta: {applyRedFix: true},
-    },
-    {
-        fingerprint: [{modelID: 'TS0504B', manufacturerName: '_TZ3000_ukuvyhaa'}],
-        model: 'TS0504B',
-        vendor: 'TuYa',
-        description: 'Zigbee smart mini led strip controller 5V/12V/24V RGBW',
-        extend: preset.light_onoff_brightness_colorxy(),
         meta: {applyRedFix: true},
     },
     {
@@ -1834,7 +1819,7 @@ const devices = [
         },
     },
     {
-        fingerprint: [{modelID: 'TS0014', manufacturerName: '_TZ3000_jr2atpww'}, {modelID: 'TS0014', manufacturerName: '_TYZB01_dvakyzhd'}],
+        fingerprint: [{modelID: 'TS0014', manufacturerName: '_TZ3000_jr2atpww'}],
         model: 'TS0014',
         vendor: 'TuYa',
         description: 'Smart light switch - 4 gang without neutral wire',
@@ -2271,6 +2256,13 @@ const devices = [
             await reporting.bind(device.getEndpoint(1), coordinatorEndpoint, ['genOnOff']);
         },
     },
+    {
+        fingerprint: [{modelID: 'TS011F', manufacturerName: '_TZ3000_rk2yzt0u'}],
+        model: 'TS011F_valve',
+        vendor: 'Lonsonho',
+        description: 'Smart water/gas valve (upgrade version)',
+        extend: preset.switch(),
+    },
 
     // IKEA
     {
@@ -2468,15 +2460,6 @@ const devices = [
         model: 'ICPSHC24-30EU-IL-1',
         vendor: 'IKEA',
         description: 'TRADFRI driver for wireless control (30 watt)',
-        extend: preset.light_onoff_brightness(),
-        ota: ota.tradfri,
-        onEvent: ikea.bulbOnEvent,
-    },
-    {
-        zigbeeModel: ['SILVERGLANS IP44 LED driver'],
-        model: 'ICPSHC24-30-IL44-1',
-        vendor: 'IKEA',
-        description: 'SILVERGLANS IP44 LED driver for wireless control (30 watt)',
         extend: preset.light_onoff_brightness(),
         ota: ota.tradfri,
         onEvent: ikea.bulbOnEvent,
@@ -4243,7 +4226,7 @@ const devices = [
         ota: ota.zigbeeOTA,
     },
     {
-        zigbeeModel: ['5041131P9'],
+        zigbeeModel: ['5041131P9', '5041148P9'],
         model: '5041131P9',
         vendor: 'Philips',
         description: 'Hue White ambiance Milliskin',
@@ -8532,15 +8515,6 @@ const devices = [
             const endpoint = device.getEndpoint(1);
             await reporting.bind(endpoint, coordinatorEndpoint, ['genOnOff']);
         },
-    },
-    {
-        zigbeeModel: ['AV2010/29A'],
-        model: 'AV2010/29A',
-        vendor: 'Bitron',
-        description: 'SMaBiT Zigbee outdoor siren',
-        fromZigbee: [fz.ias_no_alarm],
-        toZigbee: [tz.warning],
-        exposes: [e.warning(), e.battery_low(), e.tamper()],
     },
     {
         zigbeeModel: ['902010/32'],
@@ -14282,8 +14256,7 @@ const devices = [
         exposes: [e.switch().withEndpoint('l1'), e.switch().withEndpoint('l2')],
         meta: {multiEndpoint: true, configureKey: 1},
         endpoint: (device) => {
-            const hasEndpoint2 = !!device.getEndpoint(2);
-            return {l1: 1, l2: hasEndpoint2 ? 2 : 7};
+            return {l1: 1, l2: 2};
         },
         configure: async (device, coordinatorEndpoint, logger) => {
             await reporting.bind(device.getEndpoint(1), coordinatorEndpoint, ['genOnOff']);
@@ -14304,19 +14277,6 @@ const devices = [
             .withSystemMode(['off', 'heat'], ea.STATE_SET).withRunningState(['idle', 'heat', 'cool'], ea.STATE)
             .withPreset(['hold', 'program'])],
         onEvent: tuya.onEventSetLocalTime,
-    },
-    {
-        fingerprint: [{modelID: 'TS0601', manufacturerName: '_TZE200_amp6tsvy'}],
-        model: 'ZTS-EU',
-        vendor: 'Moes',
-        description: 'Wall touch light switch (1 gang)',
-        exposes: [e.switch().setAccess('state', ea.STATE_SET)],
-        fromZigbee: [fz.tuya_switch_1, fz.tuya_switch_2],
-        toZigbee: [tz.tuya_switch_state],
-        meta: {configureKey: 1},
-        configure: async (device, coordinatorEndpoint, logger) => {
-            await reporting.bind(device.getEndpoint(1), coordinatorEndpoint, ['genOnOff']);
-        },
     },
     {
         fingerprint: [{modelID: 'GbxAXL2\u0000', manufacturerName: '_TYST11_KGbxAXL2'},
